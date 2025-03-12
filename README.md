@@ -1,6 +1,6 @@
 # Interactive-Feature_WP_CSE-NITW
 
-Used elements here
+##Used elements here
 
 document.getElementById
 
@@ -56,5 +56,6 @@ localStorage.getItem
 
 .className
 
-etc
 localStorage.setItem
+
+etc
