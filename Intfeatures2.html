@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Features 2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: inherit;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .button, .input {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            border: 1px solid #444;
+        }
+
+        .button:hover, .input:hover {
+            background-color: #444;
+        }
+
+        .button:active {
+            background-color: #555;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 10px;
+        }
+
+        li {
+            background-color: #333;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #444;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        #gallery {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #gallery img {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 10px;
+        }
+
+        #gallery img:hover {
+            opacity: 0.8;
+        }
+
+        #image-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        #large-image {
+            display: none;
+            width: 60%;
+            max-width: 800px;
+            height: auto;
+            margin: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px 10px rgba(255, 255, 255, 0.5);
+            z-index: 1000;
+        }
+
+        #close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #theme-toggle:hover {
+            background-color: #444;
+        }
+
+        #theme-toggle:active {
+            background-color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Interactive Website</h1>
+
+    <div class="container">
+        <h2>Interactive Image Gallery</h2>
+        <div id="gallery">
+            <img src="images/1.jpg" alt="Image 1" onclick="openLargeImage(this)">
+            <img src="images/2.jpg" alt="Image 2" onclick="openLargeImage(this)">
+            <img src="images/3.jpg" alt="Image 3" onclick="openLargeImage(this)">
+            <img src="images/4.jpg" alt="Image 4" onclick="openLargeImage(this)">
+            <img src="images/5.jpg" alt="Image 5" onclick="openLargeImage(this)">
+        </div>
+    </div>
+
+    <div id="image-overlay" onclick="closeLargeImage()">
+        <button id="close-btn" onclick="closeLargeImage()">Close</button>
+    </div>
+    <img id="large-image" src="" alt="Large Image">
+
+    <div class="container">
+        <h2>Manage Your List</h2>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <input type="text" id="item-input" class="input" placeholder="Add new item to list">
+            <button class="button" onclick="addToList()">Add Item</button>
+        </div>
+        <ul id="list" class="bullet-style">
+            <li>Banana <button onclick="removeItem(this)" class="button" style="background-color: red;">Remove</button></li>
+            <li>Apple <button onclick="removeItem(this)" class="button" style="background-color: red;">Remove</button></li>
+            <li>Orange <button onclick="removeItem(this)" class="button" style="background-color: red;">Remove</button></li>
+        </ul>
+        <div>
+            <button class="button" onclick="sortList()">Sort Alphabetically</button>
+            <button class="button" onclick="reverseList()">Reverse Order</button>
+            <button class="button" onclick="removeDuplicates()">Remove Duplicates</button>
+            <button class="button" onclick="toggleListStyle()">Toggle List Style</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Age Table</h2>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <input type="text" id="name-input" class="input" placeholder="Name">
+            <input type="text" id="age-input" class="input" placeholder="Age">
+            <button class="button" onclick="addRow()">Add Row</button>
+        </div>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John</td>
+                    <td>28</td>
+                    <td><button onclick="deleteRow(this)" class="button" style="background-color: red;">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <button class="button" onclick="sortTable()">Sort Alphabetically</button>
+            <button class="button" onclick="reverseTable()">Reverse Order</button>
+            <button class="button" onclick="removeDuplicatesTable()">Remove Duplicates</button>
+        </div>
+    </div>
+
+
+    <script>
+        let isDarkTheme = true;
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.getElementById('theme-toggle');
+
+            if (isDarkTheme) {
+                body.style.backgroundColor = '#fff';
+                body.style.color = 'black';
+                button.innerHTML = 'Switch to Dark Theme';
+                button.style.backgroundColor = '#fff';
+                button.style.color = 'black';
+            } else {
+                body.style.backgroundColor = '#121212';
+                body.style.color = 'white';
+                button.innerHTML = 'Switch to Light Theme';
+                button.style.backgroundColor = '#333';
+                button.style.color = 'white';
+            }
+
+            isDarkTheme = !isDarkTheme;
+        }
+
+        function addToList() {
+            const itemInput = document.getElementById("item-input");
+            const itemText = itemInput.value.trim();
+
+            if (itemText) {
+                const list = document.getElementById("list");
+                const newItem = document.createElement("li");
+                newItem.innerHTML = `${itemText} <button onclick="removeItem(this)" class="button" style="background-color: red;">Remove</button>`;
+                list.appendChild(newItem);
+                itemInput.value = '';
+            }
+        }
+
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+
+        function sortList() {
+            const list = document.getElementById("list");
+            const items = Array.from(list.getElementsByTagName("li"));
+            items.sort((a, b) => a.textContent.trim().localeCompare(b.textContent.trim()));
+            items.forEach(item => list.appendChild(item));
+        }
+
+        function reverseList() {
+            const list = document.getElementById("list");
+            const items = Array.from(list.getElementsByTagName("li"));
+            items.reverse();
+            items.forEach(item => list.appendChild(item));
+        }
+
+        function removeDuplicates() {
+            const list = document.getElementById("list");
+            const items = Array.from(list.getElementsByTagName("li"));
+            const seen = new Set();
+            items.forEach(item => {
+                const itemText = item.textContent.trim();
+                if (seen.has(itemText)) {
+                    item.remove();
+                } else {
+                    seen.add(itemText);
+                }
+            });
+        }
+
+        function toggleListStyle() {
+            const list = document.getElementById("list");
+            const items = list.getElementsByTagName("li");
+
+            Array.from(items).forEach(item => {
+                item.style.color = item.style.color === "green" ? "white" : "green"; 
+            });
+        }
+
+        function addRow() {
+            const nameInput = document.getElementById("name-input");
+            const ageInput = document.getElementById("age-input");
+            const name = nameInput.value.trim();
+            const age = ageInput.value.trim();
+
+            if (name && age) {
+                const table = document.getElementById("data-table");
+                const newRow = table.insertRow();
+                newRow.innerHTML = `<td>${name}</td><td>${age}</td><td><button onclick="deleteRow(this)" class="button" style="background-color: red;">Delete</button></td>`;
+                nameInput.value = '';
+                ageInput.value = '';
+            }
+        }
+
+        function deleteRow(button) {
+            button.parentElement.parentElement.remove();
+        }
+
+        function sortTable() {
+            const table = document.getElementById("data-table");
+            const rows = Array.from(table.rows).slice(1);
+            rows.sort((a, b) => {
+                const nameA = a.cells[0].textContent.toLowerCase();
+                const nameB = b.cells[0].textContent.toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        function reverseTable() {
+            const table = document.getElementById("data-table");
+            const rows = Array.from(table.rows).slice(1);
+            rows.reverse();
+            rows.forEach(row => table.appendChild(row));
+        }
+
+        function removeDuplicatesTable() {
+            const table = document.getElementById("data-table");
+            const rows = Array.from(table.rows).slice(1);
+            const seen = new Set();
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.trim();
+                if (seen.has(name)) {
+                    row.remove();
+                } else {
+                    seen.add(name);
+                }
+            });
+        }
+
+        function openLargeImage(img) {
+            const largeImage = document.getElementById("large-image");
+            largeImage.src = img.src;
+            document.getElementById("image-overlay").style.display = "block";
+            largeImage.style.display = "block";
+        }
+
+        function closeLargeImage() {
+            document.getElementById("image-overlay").style.display = "none";
+            document.getElementById("large-image").style.display = "none";
+        }
+    </script>
+</body>
+</html>
