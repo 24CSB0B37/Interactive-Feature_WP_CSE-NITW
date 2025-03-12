@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Features</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            transition: all 0.3s ease;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            margin: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            background-color: #f0f0f0;
+            color: black;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        .countdown-timer {
+            font-size: 30px;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid;
+            transition: all 0.3s ease;
+        }
+
+        .green {
+            background-color: green;
+            color: white;
+            border-color: green;
+        }
+
+        .yellow {
+            background-color: yellow;
+            color: black;
+            border-color: yellow;
+        }
+
+        .red {
+            background-color: red;
+            color: white;
+            border-color: red;
+        }
+
+        .button.light-mode {
+            background-color: white;
+            color: black;
+        }
+
+        .button.dark-mode {
+            background-color: #333;
+            color: white;
+        }
+
+        #theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        #input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="input-container">
+        <input type="number" id="countdown-input" placeholder="Enter seconds" class="button">
+        <button id="start-btn" class="button">Start</button>
+    </div>
+
+    <div id="timer" class="countdown-timer green">00:00</div>
+
+    <div id="buttons-container">
+        <button id="pause-btn" class="button">Pause</button>
+        <button id="reset-btn" class="button">Reset</button>
+        <button id="continue-btn" class="button" style="display:none;">Resume</button>
+    </div>
+
+    <button id="theme-toggle" class="button">Switch to Dark Mode</button>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.textContent = 'Switch to Light Mode';
+        } else {
+            body.classList.add('light-mode');
+            themeToggle.textContent = 'Switch to Dark Mode';
+        }
+
+        updateButtonStyles();
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.textContent = 'Switch to Light Mode';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.textContent = 'Switch to Dark Mode';
+                localStorage.setItem('theme', 'light');
+            }
+            updateButtonStyles();
+        });
+
+        let countdownInterval;
+        let remainingTime = 0;
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const continueBtn = document.getElementById('continue-btn');
+        const countdownInput = document.getElementById('countdown-input');
+        let isPaused = false;
+
+        startBtn.addEventListener('click', () => {
+            remainingTime = parseInt(countdownInput.value, 10);
+            if (remainingTime > 0) {
+                startTimer();
+                updateButtonStyles();
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            clearInterval(countdownInterval);
+            isPaused = true;
+            continueBtn.style.display = 'inline-block';  
+            updateButtonStyles();
+        });
+
+        continueBtn.addEventListener('click', () => {
+            if (isPaused && remainingTime > 0) {
+                startTimer();
+                continueBtn.style.display = 'none';  
+                isPaused = false;
+                updateButtonStyles();
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(countdownInterval);
+            timerDisplay.textContent = '00:00';
+            countdownInput.value = '';
+            remainingTime = 0;
+            isPaused = false;
+            continueBtn.style.display = 'none'; 
+            updateButtonStyles();
+        });
+
+        function startTimer() {
+            countdownInterval = setInterval(() => {
+                if (remainingTime > 0) {
+                    remainingTime--;
+                    const minutes = Math.floor(remainingTime / 60);
+                    const seconds = remainingTime % 60;
+                    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    updateTimerColor(remainingTime);
+                } else {
+                    clearInterval(countdownInterval);
+                    continueBtn.style.display = 'none';  
+                }
+            }, 1000);
+        }
+
+        function updateTimerColor(timeLeft) {
+            if (timeLeft > 10) {
+                timerDisplay.className = 'countdown-timer green';
+            } else if (timeLeft <= 10 && timeLeft > 5) {
+                timerDisplay.className = 'countdown-timer yellow';
+            } else {
+                timerDisplay.className = 'countdown-timer red';
+            }
+        }
+
+        function updateButtonStyles() {
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach(button => {
+                if (body.classList.contains('dark-mode')) {
+                    button.classList.add('dark-mode');
+                    button.classList.remove('light-mode');
+                } else {
+                    button.classList.add('light-mode');
+                    button.classList.remove('dark-mode');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
